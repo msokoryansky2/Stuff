@@ -2,7 +2,7 @@ import util.Properties
 
 /**
   * Class representing a two-dimensional "field" of integers.
-  * Each element of the inner array is a row in the field.
+  * Each element of the inner array is a row in the field of integers.
   * @param field represents two-dimension field of numbers.
   */
 class NumberField (field: Array[Array[Int]]) {
