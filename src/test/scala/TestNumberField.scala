@@ -33,4 +33,17 @@ class TestNumberField extends FunSuite {
     assert(field.el(0, 0) === 123)
     assert(field.el(1, 2) === 232)
   }
+
+  test("bestPath returns path resulting in largest sum of visited numbers") {
+    val field = NumberField(
+      """
+        |001 002 003 004
+        |005 006 007 009
+        |010 011 012 013
+        |001 002 003 004
+      """.stripMargin)
+
+    assert(field.bestPath === List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2), (3, 2), (3, 3)))
+    assert(field.evalPath(field.bestPath) === 56)
+  }
 }

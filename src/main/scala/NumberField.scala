@@ -16,6 +16,23 @@ class NumberField (field: Array[Array[Int]]) {
     field(y)(x)
   }
 
+  def evalPath(path: List[(Int, Int)]): Int = path.foldLeft(0)((e, cell) => e + el(cell._1, cell._2))
+
+  def bestPath: List[(Int, Int)] = {
+    def bestPathAcc(x: Int, y: Int, acc: List[(Int, Int)]): List[(Int, Int)] = {
+      (x, y) match {
+        case (right, bottom) if right == width - 1 && bottom == height - 1 => (x, y) :: acc
+        case (right, other) if right == width - 1 => bestPathAcc(x, y + 1, (x, y) :: acc)
+        case (other, bottom) if bottom == height - 1 => bestPathAcc(x + 1, y, (x, y) :: acc)
+        case _ =>
+          val overPath = bestPathAcc(x + 1, y, (x, y) :: acc)
+          val downPath = bestPathAcc(x, y + 1, (x, y) :: acc)
+          if (evalPath(overPath) > evalPath(downPath)) overPath else downPath
+      }
+    }
+    bestPathAcc(0, 0, List()).reverse
+  }
+
   override def toString: String =
     field.map(row => row.map(("%0" + elSize.toString + "d").format(_)).mkString(" ")).mkString(Properties.lineSeparator)
 }
