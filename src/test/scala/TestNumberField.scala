@@ -34,6 +34,35 @@ class TestNumberField extends FunSuite {
     assert(field.el(1, 2) === 232)
   }
 
+  test("allPathsBruteForce enumerates all possible paths") {
+    val field = NumberField(
+      """
+        |123  0145
+        |56   0232
+      """.stripMargin)
+
+    val allPaths = field.allPathsBruteForce.toSet
+    assert(allPaths === Set(
+      List((0, 0), (0, 1), (1, 1)),
+      List((0, 0), (1, 0), (1, 1))))
+
+    val field2 = NumberField(
+      """
+        |123  0145 355
+        |1236 63662 -36
+        |56   0232 35
+      """.stripMargin)
+
+    val allPaths2 = field2.allPathsBruteForce.toSet
+    assert(allPaths2 === Set(
+      List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2)),
+      List((0, 0), (0, 1), (1, 1), (1, 2), (2, 2)),
+      List((0, 0), (0, 1), (1, 1), (2, 1), (2, 2)),
+      List((0, 0), (1, 0), (1, 1), (1, 2), (2, 2)),
+      List((0, 0), (1, 0), (1, 1), (2, 1), (2, 2)),
+      List((0, 0), (1, 0), (2, 0), (2, 1), (2, 2))))
+  }
+
   private val field = NumberField(
     """
       |001 002 003 004
@@ -43,6 +72,7 @@ class TestNumberField extends FunSuite {
     """.stripMargin)
   private val path = field.bestPath()
   private val pathSlow = field.bestPathSlow()
+  private val pathBrute = field.bestPathBruteForce
 
   private val field2 = NumberField(
     """
@@ -53,6 +83,7 @@ class TestNumberField extends FunSuite {
     """.stripMargin)
   private val path2: List[(Int, Int)] = field2.bestPath()
   private val pathSlow2 = field2.bestPathSlow()
+  private val pathBrute2 = field2.bestPathBruteForce
 
   private val field3 = NumberField(
     """
@@ -63,6 +94,15 @@ class TestNumberField extends FunSuite {
     """.stripMargin)
   private val path3: List[(Int, Int)] = field3.bestPath()
   private val pathSlow3 = field3.bestPathSlow()
+  private val pathBrute3 = field3.bestPathBruteForce
+
+  test("toString creates a visual representation of the field") {
+    assert(field3.toString ===
+      """|  1   2   3   4
+         |  5   6   7  19
+         |-10 -11 -12 -13
+         |  1   2   3   4""".stripMargin)
+  }
 
   test("bestPath returns path resulting in largest sum of visited numbers") {
     assert(path === List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2), (3, 2), (3, 3)))
@@ -74,6 +114,12 @@ class TestNumberField extends FunSuite {
     assert(path === pathSlow)
     assert(path2 === pathSlow2)
     assert(path3 === pathSlow3)
+  }
+
+  test("bestPathBruteForce should be same as bestPath") {
+    assert(path === pathBrute)
+    assert(path2 === pathBrute2)
+    assert(path3 === pathBrute3)
   }
 
   test("evalPath evaluates path value") {
@@ -88,28 +134,22 @@ class TestNumberField extends FunSuite {
 
   test("pathToString creates a visual representation of a path") {
     assert(field.pathToString(path) ===
-      """
-        |01 .. .. ..
-        |05 .. .. ..
-        |10 11 12 13
-        |.. .. .. 04
-      """.stripMargin.trim)
+      """| 1 .. .. ..
+         | 5 .. .. ..
+         |10 11 12 13
+         |.. .. ..  4""".stripMargin)
 
     assert(field2.pathToString(path2) ===
-      """
-        |001 ... ... ...
-        |005 006 007 ...
-        |... ... 012 ...
-        |... ... 003 004
-      """.stripMargin.trim)
+      """|  1 ... ... ...
+         |  5   6   7 ...
+         |... ...  12 ...
+         |... ...   3   4""".stripMargin)
 
     assert(field3.pathToString(path3) ===
-      """
-        |001 ... ... ...
-        |005 006 007 019
-        |... ... ... -13
-        |... ... ... 004
-      """.stripMargin.trim)
+      """|  1 ... ... ...
+         |  5   6   7  19
+         |... ... ... -13
+         |... ... ...   4""".stripMargin)
   }
 
   test("NumberField can be randomly generated too") {
