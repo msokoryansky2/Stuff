@@ -29,9 +29,8 @@ class TestNumberField extends FunSuite {
 
     assert(field.height === 3)
     assert(field.width === 2)
-    assert(field.el(0,0) === 123)
-    assert(field.el(2, 1) === 232)
-
-    println(field)
+    assert(field.elSize === 5)
+    assert(field.el(0, 0) === 123)
+    assert(field.el(1, 2) === 232)
   }
 }

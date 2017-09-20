@@ -9,7 +9,7 @@ class NumberField (field: Array[Array[Int]]) {
   require(NumberField.isValid(field), "Invalid number field specified")
   val height: Int = field.length
   val width: Int = field(0).length
-  val maxCellLength: Int = field.map(row => row.max).max.toString.length
+  val elSize: Int = field.map(row => row.max).max.toString.length
 
   def el(x: Int, y: Int): Int = {
     require(y >= 0 && y < height && x >= 0 && x < width, s"Invalid co-ordinates ($x, $y) specified")
@@ -17,7 +17,7 @@ class NumberField (field: Array[Array[Int]]) {
   }
 
   override def toString: String =
-    field.map(row => row.map(cell => f"{$cell}%%0{$maxCellLength}d").mkString(" ")).mkString(Properties.lineSeparator)
+    field.map(row => row.map(("%0" + elSize.toString + "d").format(_)).mkString(" ")).mkString(Properties.lineSeparator)
 }
 
 object NumberField {
@@ -28,5 +28,5 @@ object NumberField {
     field.nonEmpty && field(0).nonEmpty && !field.exists(row => row.length != field(0).length)
 
   def fromString(field: String): Array[Array[Int]] =
-    field.split(Properties.lineSeparator).filterNot(_.trim.isEmpty).map(row => row.split("\\s").map(_.toInt))
+    field.split(Properties.lineSeparator).filterNot(_.trim.isEmpty).map(row => row.split("\\s+").map(_.toInt))
 }
