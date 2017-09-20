@@ -34,32 +34,35 @@ class TestNumberField extends FunSuite {
     assert(field.el(1, 2) === 232)
   }
 
-  val field = NumberField(
+  private val field = NumberField(
     """
       |001 002 003 004
       |005 006 007 009
       |010 011 012 013
       |001 002 003 004
     """.stripMargin)
-  val path: List[(Int, Int)] = field.bestPath
+  private val path = field.bestPath()
+  private val pathSlow = field.bestPathSlow()
 
-  val field2 = NumberField(
+  private val field2 = NumberField(
     """
-      |001 002 003 004
-      |005 006 007 009
+      |001 002 3 04
+      |5 006 007 009
       |010 -11 12 -013
-      |001 002 003 004
+      |001 02 003 0004
     """.stripMargin)
-  val path2: List[(Int, Int)] = field2.bestPath
+  private val path2: List[(Int, Int)] = field2.bestPath()
+  private val pathSlow2 = field2.bestPathSlow()
 
-  val field3 = NumberField(
+  private val field3 = NumberField(
     """
       |001 002 003 004
       |005 006 007 019
       |-10 -11 -12 -13
       |001 002 003 004
     """.stripMargin)
-  val path3: List[(Int, Int)] = field3.bestPath
+  private val path3: List[(Int, Int)] = field3.bestPath()
+  private val pathSlow3 = field3.bestPathSlow()
 
   test("bestPath returns path resulting in largest sum of visited numbers") {
     assert(path === List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2), (3, 2), (3, 3)))
@@ -67,7 +70,17 @@ class TestNumberField extends FunSuite {
     assert(path3 === List((0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 2), (3, 3)))
   }
 
+  test("bestPathSlow should be same as bestPath") {
+    assert(path === pathSlow)
+    assert(path2 === pathSlow2)
+    assert(path3 === pathSlow3)
+  }
+
   test("evalPath evaluates path value") {
+    assert(field.evalPath(path) === 56)
+    assert(field2.evalPath(path2) === 38)
+    assert(field3.evalPath(path3) === 29)
+
     assert(field.evalPath(path) === 56)
     assert(field2.evalPath(path2) === 38)
     assert(field3.evalPath(path3) === 29)
@@ -97,5 +110,22 @@ class TestNumberField extends FunSuite {
         |... ... ... -13
         |... ... ... 004
       """.stripMargin.trim)
+  }
+
+  test("NumberField can be randomly generated too") {
+    val field = NumberField(40, 40, (5 to 8).toSet)
+    val path = field.bestPath()
+    assert(path.size === 79)
+    assert(field.evalPath(path) >= 395)
+
+    val field2 = NumberField(40, 25, (10 to 20).toSet)
+    val path2 = field2.bestPath()
+    assert(path2.size === 64)
+    assert(field2.evalPath(path2) >= 640)
+
+    val field3 = NumberField(25, 40, (10 to 20).toSet)
+    val path3 = field3.bestPath()
+    assert(path3.size === 64)
+    assert(field3.evalPath(path3) >= 640)
   }
 }
