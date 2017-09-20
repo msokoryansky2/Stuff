@@ -52,14 +52,25 @@ class TestNumberField extends FunSuite {
     """.stripMargin)
   val path2: List[(Int, Int)] = field2.bestPath
 
+  val field3 = NumberField(
+    """
+      |001 002 003 004
+      |005 006 007 019
+      |-10 -11 -12 -13
+      |001 002 003 004
+    """.stripMargin)
+  val path3: List[(Int, Int)] = field3.bestPath
+
   test("bestPath returns path resulting in largest sum of visited numbers") {
     assert(path === List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2), (3, 2), (3, 3)))
-    assert(path2 === List((0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (2, 3), (3, 3)))
+    assert(path2 === List((0, 0), (0, 1), (1, 1), (2, 1), (2, 2), (2, 3), (3, 3)))
+    assert(path3 === List((0, 0), (0, 1), (1, 1), (2, 1), (3, 1), (3, 2), (3, 3)))
   }
 
   test("evalPath evaluates path value") {
     assert(field.evalPath(path) === 56)
-    assert(field2.evalPath(path2) === 34)
+    assert(field2.evalPath(path2) === 38)
+    assert(field3.evalPath(path3) === 29)
   }
 
   test("pathToString creates a visual representation of a path") {
@@ -73,10 +84,18 @@ class TestNumberField extends FunSuite {
 
     assert(field2.pathToString(path2) ===
       """
-        |001 002 003 ...
-        |... ... 007 ...
+        |001 ... ... ...
+        |005 006 007 ...
         |... ... 012 ...
         |... ... 003 004
+      """.stripMargin.trim)
+
+    assert(field3.pathToString(path3) ===
+      """
+        |001 ... ... ...
+        |005 006 007 019
+        |... ... ... -13
+        |... ... ... 004
       """.stripMargin.trim)
   }
 }
