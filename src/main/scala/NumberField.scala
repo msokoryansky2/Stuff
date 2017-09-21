@@ -33,12 +33,26 @@ class NumberField (field: Seq[Seq[Int]]) {
 
   /**
     * Brute force creation of all possible paths from top left corner to bottom right corner.
+    *
     * We know that any such path must have (Height - 1) steps down and (Width - 1) steps to the right.
     * We use that fact to create "binary" representations of all such paths where
-    * 0 is a step dowm and 1 is a step to the right.
+    * 0 is a step down and 1 is a step to the right.
     *
     * So we start by creating all permutations of (Height - 1) 0s and (Width - 1) 1s
     * and then map each one to an actual path.
+    *
+    * Fun observation
+    * ---------------
+    * Since number of "down steps" is (Height - 1) and number of "right steps" is (Width - 1),
+    * the total number of steps -- call it NumSteps == (Width + Height - 2).
+    *
+    * By definition:  (Width - 1) == NumSteps - (Height - 1)
+    * and vice versa: (Height - 1) == NumSteps - (Width - 1)
+    *
+    * Since we just essentially described all permutations of X ones -- or (NumSteps - X) zeros -- as
+    * equalling the number of all possible paths, it's trivially true that number of possible paths is:
+    *
+    * NumSteps choose (Width - 1) == NumSteps choose (Height - 1) == (NumSteps! / ((Width - 1)! * (Height - 1)!)
     */
   def allPathsBruteForce: List[List[(Int, Int)]] = {
     /**
@@ -178,4 +192,12 @@ object NumberField {
     */
   def fromString(field: String): Seq[Seq[Int]] =
     field.split(Properties.lineSeparator).filterNot(_.trim.isEmpty).map(row => row.split("\\s+").toSeq.map(_.toInt))
+}
+
+object NumberFieldApp extends App {
+  val nf = NumberField(50, 50, (-10 to 20).toSet)
+  val path = nf.bestPath()
+
+  println(nf + "\n\n\n")
+  println(nf.pathToString(path))
 }
