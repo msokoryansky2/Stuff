@@ -24,4 +24,4 @@ object Quine2 extends App {
     println(s.stripMargin.format(s, "\""))
 }
 
-object Quine3 extends App { val s = "\\"; val q = "\""; val p = "object Quine3 extends App { val s = %1$s%3$s%3$s%1$s; val q = %1$s%3$s%1$s%1$s; val s = %1$s%2$s%1$s; println(p.format(q, p, s)) }"; println(p.format(q, p, s)) }
+object Quine3 extends App { val s = "\\"; val q = "\""; val p = "object Quine3 extends App { val s = %1$s%3$s%3$s%1$s; val q = %1$s%3$s%1$s%1$s; val p = %1$s%2$s%1$s; println(p.format(q, p, s)) }"; println(p.format(q, p, s)) }
