@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 class TestMikeLinkedList extends FunSuite {
 
-  test("Single-node linked list is empty") {
+  test("isLast and isFirst test if node is start or end of the list") {
     assert(new MikeLinkedList[Int](5, None).isLast === true)
     assert(new MikeLinkedList[Int](5, None).prepend(6).isLast === false)
     assert(new MikeLinkedList[Int](5, None).prepend(6).remove.get.isLast === true)
@@ -30,5 +30,13 @@ class TestMikeLinkedList extends FunSuite {
     assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).size === 3)
     assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).prepend(8).size === 4)
     assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.size === 2)
+  }
+
+  test("last returns last node in the list") {
+    assert(new MikeLinkedList[Int](5, None).last.toString === "5")
+    assert(new MikeLinkedList[Int](5, None).prepend(6).last.toString === "5")
+    assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).last.toString === "5")
+    assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).prepend(8).last.toString === "5")
+    assert(new MikeLinkedList[Int](5, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.last.toString === "5")
   }
 }
