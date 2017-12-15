@@ -107,11 +107,65 @@ class TestMikeDoublyLinkedList extends FunSuite {
     assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).prepend(9).toString === "5 <-> 7 <-> 9 <-> 8 <-> 6")
   }
 
-  test("last returns last node in the list") {
+  test("last and first return last and first node in the list") {
     assert(new MikeDoublyLinkedList[Int](5, None, None).last.item === 5)
     assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).last.item === 5)
     assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).last.item === 5)
     assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).last.item === 5)
     assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.last.item === 5)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).first.item === 7)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).first.item === 8)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.first.item === 6)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).first.item === 7)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).append(7).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).append(8).first.item === 7)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).first.item === 8)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.first.item === 6)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).append(8).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).append(8).append(9).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).first.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).append(9).first.item === 6)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).prepend(8).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).first.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).prepend(9).first.item === 5)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).append(7).last.item === 7)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).append(8).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).prepend(7).prepend(8).remove.get.remove.get.last.item === 5)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).append(8).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).append(8).append(9).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).last.item === 5)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).prepend(6).append(7).prepend(8).append(9).last.item === 5)
+
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).prepend(8).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).last.item === 6)
+    assert(new MikeDoublyLinkedList[Int](5, None, None).append(6).prepend(7).append(8).prepend(9).last.item === 6)
   }
 }
