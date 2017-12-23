@@ -99,18 +99,22 @@ class MikeMutableDoublyLinkedList[A] {
   def reverse(): Unit = {
     // Nothing to do if it's a 0- or 1-element list
     if (first.nonEmpty && first.get.next.nonEmpty) {
-      def reverseAcc(last: MikeMutableDoublyLinkedListEl[A], curr: Option[MikeMutableDoublyLinkedListEl[A]]): Unit = {
+      def reverseAcc(curr: Option[MikeMutableDoublyLinkedListEl[A]]): Unit = {
         if (curr.isEmpty) {
-          first.get.next = None
-          first = Some(last)
+          val temp = last
+          first = last
+          last = temp
+          first.get.prev = None
+          last.get.next = None
         }
         else {
-          val next = curr.get.next
-          curr.get.next = Some(last)
-          reverseAcc(curr.get, next)
+          val temp = curr.get.next
+          curr.get.next = curr.get.prev
+          curr.get.prev = temp
+          reverseAcc(temp)
         }
       }
-      reverseAcc(first.get, first.get.next)
+      reverseAcc(first)
     }
   }
 
