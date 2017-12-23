@@ -1,6 +1,6 @@
 package MikeDataStruct
 
-class MikeQueue[A](val items: MikeDoublyLinkedList[A]) {
+class MikeQueue[A](val items: MikeMutableDoublyLinkedList[A]) {
   def enqueue(item: A): MikeQueue[A] = ???
   def dequeue: Option[A] = ???
   def isEmpty: Boolean = ???
