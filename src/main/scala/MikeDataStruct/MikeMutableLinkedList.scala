@@ -81,9 +81,8 @@ class MikeMutableLinkedList[A] {
   def insertBefore(item2: A, before: A): Option[A] = {
     if (first.isEmpty) None
     else if (first.get.item == before) {
-      val el = new MikeMutableLinkedListEl[A](item2, first)
-      first = Some(el)
-      Some(el.item)
+      push(item2)
+      Some(item2)
     }
     else {
       val nextToSpecified = getNextToSpecified(before)

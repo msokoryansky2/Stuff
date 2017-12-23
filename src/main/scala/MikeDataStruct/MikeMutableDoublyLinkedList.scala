@@ -64,16 +64,16 @@ class MikeMutableDoublyLinkedList[A] {
   def insertBefore(item2: A, before: A): Option[A] = {
     if (first.isEmpty) None
     else if (first.get.item == before) {
-      val el = new MikeMutableDoublyLinkedListEl[A](item2, first)
-      first = Some(el)
-      Some(el.item)
+      push(item2)
+      Some(item2)
     }
     else {
       val nextToSpecified = getNextToSpecified(before)
       if (nextToSpecified.isEmpty) None
       else {
-        val el = new MikeMutableDoublyLinkedListEl[A](item2, nextToSpecified.get.next)
+        val el = new MikeMutableDoublyLinkedListEl[A](item2, nextToSpecified, nextToSpecified.get.next)
         nextToSpecified.get.next = Some(el)
+        if (el.next.isEmpty) el.next.get.prev = Some(el)
         Some(el.item)
       }
     }
@@ -87,7 +87,10 @@ class MikeMutableDoublyLinkedList[A] {
       if (nextToSpecified.isEmpty) None
       else {
         val el = nextToSpecified.get.next
-        nextToSpecified.get.next = el.get.next
+        if (el.get.next.nonEmpty) {
+          nextToSpecified.get.next = el.get.next
+          el.get.next.get.prev = nextToSpecified
+        }
         Some(el.get.item)
       }
     }
