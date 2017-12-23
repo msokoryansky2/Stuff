@@ -80,15 +80,20 @@ class MikeMutableLinkedList[A] {
     }
   }
 
-  def insertBefore(item2: A, before: A): Option[MikeMutableLinkedListEl[A]] = {
+  def insertBefore(item2: A, before: A): Option[A] = {
     if (first.isEmpty) None
+    else if (first.get.item == before) {
+      val el = new MikeMutableLinkedListEl[A](item2, first)
+      first = Some(el)
+      Some(el.item)
+    }
     else {
-      val nextToSpecified = getNextToSpecified(item2)
+      val nextToSpecified = getNextToSpecified(before)
       if (nextToSpecified.isEmpty) None
       else {
-        val someEl = Some(new MikeMutableLinkedListEl[A](item2, nextToSpecified.get.next))
-        nextToSpecified.get.next = someEl
-        someEl
+        val el = new MikeMutableLinkedListEl[A](item2, nextToSpecified.get.next)
+        nextToSpecified.get.next = Some(el)
+        Some(el.item)
       }
     }
   }
@@ -104,6 +109,29 @@ class MikeMutableLinkedList[A] {
         nextToSpecified.get.next = el.get.next
         Some(el.get.item)
       }
+    }
+  }
+
+  def reverse: Unit = {
+    // Nothing to do if it's a 0- or 1-element list
+    if (first.nonEmpty && first.get.next.nonEmpty) {
+      def reverseAcc(last: MikeMutableLinkedListEl[A], curr: Option[MikeMutableLinkedListEl[A]]): Unit = {
+        if (curr.isEmpty) first = Some(last)
+        else {
+          println(s"Last is ${last.item}, Curr is " + (if (curr.isEmpty) "None" else curr.get.item))
+
+          val next = curr.get.next
+
+          println(s"Next is " + (if (next.isEmpty) "None" else next.get.item))
+
+          curr.get.next = Some(last)
+
+          println(s"New Last will be " + (if (curr.isEmpty) "None" else curr.get.item) + " and New Curr will be " + (if (next.isEmpty) "None" else next.get.item) + ". Curr Next is " + (if (curr.get.next.isEmpty) "None" else curr.get.next.get.item))
+
+          reverseAcc(curr.get, next)
+        }
+      }
+      reverseAcc(first.get, first.get.next)
     }
   }
 
