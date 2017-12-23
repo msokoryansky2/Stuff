@@ -352,22 +352,47 @@ class MikeMutableLinkedListTest extends FunSuite {
     val l = new MikeMutableLinkedList[Int]
     assert(l.toString === "")
 
-    l.reverse
+    l.reverse()
     assert(l.toString === "")
 
     l.push(1)
     assert(l.toString === "1")
-    l.reverse
+    l.reverse()
     assert(l.toString === "1")
 
     l.push(2)
     assert(l.toString === "2 -> 1")
-    l.reverse
+    l.reverse()
     assert(l.toString === "1 -> 2")
 
     l.push(3)
     assert(l.toString === "3 -> 1 -> 2")
-    l.reverse
+    l.reverse()
     assert(l.toString === "2 -> 1 -> 3")
+
+    l.insertBefore(4, 1)
+    assert(l.toString === "2 -> 4 -> 1 -> 3")
+    l.reverse()
+    assert(l.toString === "3 -> 1 -> 4 -> 2")
+
+    assert(l.pop === Some(3))
+    assert(l.toString === "1 -> 4 -> 2")
+    l.reverse()
+    assert(l.toString === "2 -> 4 -> 1")
+
+    assert(l.pop === Some(2))
+    assert(l.toString === "4 -> 1")
+    l.reverse()
+    assert(l.toString === "1 -> 4")
+
+    assert(l.pop === Some(1))
+    assert(l.toString === "4")
+    l.reverse()
+    assert(l.toString === "4")
+
+    assert(l.pop === Some(4))
+    assert(l.toString === "")
+    l.reverse()
+    assert(l.toString === "")
   }
 }
