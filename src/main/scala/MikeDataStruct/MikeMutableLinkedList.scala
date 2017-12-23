@@ -3,9 +3,10 @@ package MikeDataStruct
 import scala.annotation.tailrec
 
 class MikeMutableLinkedList[A] {
-  case class MikeMutableLinkedListEl[A](item: A, var next: Option[MikeMutableLinkedListEl[A]])
+  case class MikeMutableLinkedListEl[A](item: A,
+                                        var next: Option[MikeMutableLinkedListEl[A]])
 
-  private var first:  Option[MikeMutableLinkedListEl[A]] = None
+  private var first: Option[MikeMutableLinkedListEl[A]] = None
 
   override def toString: String = toString(" -> ")
   def toString(connector: String): String = {
@@ -39,10 +40,8 @@ class MikeMutableLinkedList[A] {
 
   def peek: Option[A] = if (first.isEmpty) None else Some(first.get.item)
 
-  def push(item2: A): MikeMutableLinkedListEl[A] = {
-    val el = new MikeMutableLinkedListEl[A](item2, first)
-    first = Some(el)
-    el
+  def push(item2: A): Unit = {
+    first = Some(new MikeMutableLinkedListEl[A](item2, first))
   }
 
   def pop: Option[A] = {
@@ -59,10 +58,9 @@ class MikeMutableLinkedList[A] {
     if (last.isEmpty) None else Some(last.get.item)
   }
 
-  def pushLast(item2: A): MikeMutableLinkedListEl[A] = {
+  def pushLast(item2: A): Unit = {
     val el = new MikeMutableLinkedListEl[A](item2, None)
     if (first.isEmpty) first = Some(el) else getLast.get.next = Some(el)
-    el
   }
 
   def popLast: Option[A] = {

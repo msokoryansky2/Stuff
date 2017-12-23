@@ -1,82 +1,127 @@
 package MikeDataStruct
 
-/**
-  * Mutable doubly-linked list impl
-  */
-class MikeMutableDoublyLinkedList[A](var item: A, var prev: Option[MikeMutableDoublyLinkedList[A]], var next: Option[MikeMutableDoublyLinkedList[A]]) {
-  private var _first: MikeMutableDoublyLinkedList[A] = if (prev.nonEmpty) prev.get._first else this
-  private var _last: MikeMutableDoublyLinkedList[A] = if (next.nonEmpty) next.get._last else this
-  private var _isEmpty = false
+import scala.annotation.tailrec
 
-  def set(other: MikeMutableDoublyLinkedList[A]): MikeMutableDoublyLinkedList[A] = {
-    this.item = other.item
-    this.prev = other.prev
-    this.next = other.next
-    this._first = other._first
-    this._last = other._last
-    this._isEmpty = other._isEmpty
-    this
+class MikeMutableDoublyLinkedList[A] {
+  case class MikeMutableDoublyLinkedListEl[A](item: A,
+                                              var prev: Option[MikeMutableDoublyLinkedListEl[A]],
+                                              var next: Option[MikeMutableDoublyLinkedListEl[A]])
+
+  private var first: Option[MikeMutableDoublyLinkedListEl[A]] = None
+  private var last: Option[MikeMutableDoublyLinkedListEl[A]] = None
+
+  override def toString: String = toString(" <-> ")
+  def toString(connector: String): String = {
+    @tailrec def toStringAcc(node: MikeMutableDoublyLinkedListEl[A], acc: String): String =
+      if (node.next.isEmpty) acc + node.item.toString else toStringAcc(node.next.get, acc + node.item.toString + connector)
+    if (first.isEmpty) "" else toStringAcc(first.get, "")
   }
-  def prepend(item2: A): MikeMutableDoublyLinkedList[A] = {
-    if (_isEmpty) set(new MikeMutableDoublyLinkedList[A](item2, None, None))
+
+  private def getFirst: Option[MikeMutableDoublyLinkedListEl[A]] = first
+  private def getLast: Option[MikeMutableDoublyLinkedListEl[A]] = last
+
+  private def getNextToSpecified(item2: A): Option[MikeMutableDoublyLinkedListEl[A]] = {
+    @tailrec def getNextToSpecifiedAcc(acc: MikeMutableDoublyLinkedListEl[A]): Option[MikeMutableDoublyLinkedListEl[A]] = {
+      if (acc.next.isEmpty) None else if (acc.next.get.item == item2) Some(acc) else getNextToSpecifiedAcc(acc.next.get)
+    }
+    if (first.isEmpty || first.get.item == item2) None else getNextToSpecifiedAcc(first.get)
+  }
+
+  def peek: Option[A] = if (first.isEmpty) None else Some(first.get.item)
+
+  def push(item2: A): Unit = {
+    val el = new MikeMutableDoublyLinkedListEl[A](item2, None, first)
+    if (first.nonEmpty) first.get.prev = Some(el)
+    first = Some(el)
+  }
+
+  def pop: Option[A] = {
+    if (first.isEmpty) None
     else {
-      val prependedNode = new MikeMutableDoublyLinkedList[A](item2, prev, Some(this))
-      if (!isFirst) prev.get.next = Some(prependedNode)
-      prev = Some(prependedNode)
-      _first = prependedNode._first
-      prependedNode
+      val item = first.get.item
+      first = first.get.next
+      Some(item)
     }
   }
-  def append(item2: A): MikeMutableDoublyLinkedList[A] = {
-    if (_isEmpty) set(new MikeMutableDoublyLinkedList[A](item2, None, None))
+
+  def peekLast: Option[A] = if (last.isEmpty) None else Some(last.get.item)
+
+  def pushLast(item2: A): Unit = {
+    val el = new MikeMutableDoublyLinkedListEl[A](item2, last, None)
+    if (last.nonEmpty) last.get.next = Some(el)
+    last = Some(el)
+  }
+
+  def popLast: Option[A] = {
+    if (last.isEmpty) None
     else {
-      val appendedNode = new MikeMutableDoublyLinkedList[A](item2, Some(this), next)
-      if (!isLast) next.get.prev = Some(appendedNode)
-      next = Some(appendedNode)
-      _last = appendedNode._last
-      appendedNode
+      val item = last.get.item
+      last = last.get.prev
+      Some(item)
     }
   }
-  def remove: Option[MikeMutableDoublyLinkedList[A]] = {
-    require(!_isEmpty, "Cannot remove from an empty list")
-    if (isFirst && isLast) {
-      _isEmpty = true
-      Some(this)
-    } else if (isFirst) {
-      next.get.prev = None
-      next.get._first = next.get
-      next
-    } else if (isLast) {
-      prev.get.next = None
-      prev.get._last = prev.get
-      prev
-    } else {
-      prev.get.next = next
-      next.get.prev = prev
-      next
+
+  def insertBefore(item2: A, before: A): Option[A] = {
+    if (first.isEmpty) None
+    else if (first.get.item == before) {
+      val el = new MikeMutableDoublyLinkedListEl[A](item2, first)
+      first = Some(el)
+      Some(el.item)
+    }
+    else {
+      val nextToSpecified = getNextToSpecified(before)
+      if (nextToSpecified.isEmpty) None
+      else {
+        val el = new MikeMutableDoublyLinkedListEl[A](item2, nextToSpecified.get.next)
+        nextToSpecified.get.next = Some(el)
+        Some(el.item)
+      }
     }
   }
-  def reverse: MikeMutableDoublyLinkedList[A] = {
-    val temp = _first
-    _first = _last
-    _last = temp
-    this
+
+  def remove(item2: A): Option[A] = {
+    if (first.isEmpty) None
+    else if (first.get.item == item2) pop
+    else {
+      val nextToSpecified = getNextToSpecified(item2)
+      if (nextToSpecified.isEmpty) None
+      else {
+        val el = nextToSpecified.get.next
+        nextToSpecified.get.next = el.get.next
+        Some(el.get.item)
+      }
+    }
   }
 
-  def isFirst: Boolean = prev.isEmpty
-  def isLast: Boolean = next.isEmpty
-  def first: MikeMutableDoublyLinkedList[A] = _first
-  def last: MikeMutableDoublyLinkedList[A] = _last
-  def isEmpty: Boolean = _isEmpty
-
-  def size: Long = {
-    def sizeAcc(node: MikeMutableDoublyLinkedList[A], acc: Long): Long =
-      if (node.isLast) acc else sizeAcc(node.next.get, acc + 1)
-    sizeAcc(_first, 1)
+  def reverse(): Unit = {
+    // Nothing to do if it's a 0- or 1-element list
+    if (first.nonEmpty && first.get.next.nonEmpty) {
+      def reverseAcc(last: MikeMutableDoublyLinkedListEl[A], curr: Option[MikeMutableDoublyLinkedListEl[A]]): Unit = {
+        if (curr.isEmpty) {
+          first.get.next = None
+          first = Some(last)
+        }
+        else {
+          val next = curr.get.next
+          curr.get.next = Some(last)
+          reverseAcc(curr.get, next)
+        }
+      }
+      reverseAcc(first.get, first.get.next)
+    }
   }
-  override def toString: String = {
-    def toStringAcc(node: MikeMutableDoublyLinkedList[A], acc: String): String =
-      if (node.isLast) acc + node.item.toString else toStringAcc(node.next.get, acc + node.item.toString + " <-> ")
-    toStringAcc(_first, "")
+
+  def contains(item2: A): Boolean = {
+    @tailrec def containsAcc(acc: MikeMutableDoublyLinkedListEl[A]): Boolean = {
+      if (acc.item == item2) true else if (acc.next.isEmpty) false else containsAcc(acc.next.get)
+    }
+    if (first.isEmpty) false else containsAcc(first.get)
+  }
+
+  def length: Long = {
+    @tailrec def lengthAcc(node: MikeMutableDoublyLinkedListEl[A], acc: Long): Long = {
+      if (node.next.isEmpty) acc else lengthAcc(node.next.get, acc + 1)
+    }
+    if (first.isEmpty) 0 else lengthAcc(first.get, 1)
   }
 }
