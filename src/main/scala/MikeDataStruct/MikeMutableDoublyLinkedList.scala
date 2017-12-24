@@ -25,9 +25,6 @@ class MikeMutableDoublyLinkedList[A] {
     if (last.isEmpty) "" else toStringAcc(last.get, "")
   }
 
-  private def getFirst: Option[MikeMutableDoublyLinkedListEl[A]] = first
-  private def getLast: Option[MikeMutableDoublyLinkedListEl[A]] = last
-
   private def getNextToSpecified(item2: A): Option[MikeMutableDoublyLinkedListEl[A]] = {
     @tailrec def getNextToSpecifiedAcc(acc: MikeMutableDoublyLinkedListEl[A]): Option[MikeMutableDoublyLinkedListEl[A]] = {
       if (acc.next.isEmpty) None else if (acc.next.get.item == item2) Some(acc) else getNextToSpecifiedAcc(acc.next.get)
@@ -134,23 +131,22 @@ class MikeMutableDoublyLinkedList[A] {
 
   def reverse(): Unit = {
     // Nothing to do if it's a 0- or 1-element list
-    if (first.nonEmpty && first.get.next.nonEmpty) {
-      def reverseAcc(curr: Option[MikeMutableDoublyLinkedListEl[A]]): Unit = {
-        if (curr.isEmpty) {
-          val temp = last
-          first = last
-          last = temp
-          first.get.prev = None
-          last.get.next = None
+    if (len > 1) {
+      def reverseAcc(curr: MikeMutableDoublyLinkedListEl[A]): Unit = {
+        if (curr.next.isEmpty) {
+          curr.next = curr.prev
+          curr.prev = None
+          last = first
+          first = Some(curr)
         }
         else {
-          val temp = curr.get.next
-          curr.get.next = curr.get.prev
-          curr.get.prev = temp
-          reverseAcc(temp)
+          val temp = curr.next
+          curr.next = curr.prev
+          curr.prev = temp
+          reverseAcc(temp.get)
         }
       }
-      reverseAcc(first)
+      reverseAcc(first.get)
     }
   }
 
