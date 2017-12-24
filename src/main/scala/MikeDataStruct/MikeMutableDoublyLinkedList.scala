@@ -9,6 +9,7 @@ class MikeMutableDoublyLinkedList[A] {
 
   private var first: Option[MikeMutableDoublyLinkedListEl[A]] = None
   private var last: Option[MikeMutableDoublyLinkedListEl[A]] = None
+  private var len: Long = 0
 
   override def toString: String = toString(" <-> ")
   def toString(connector: String): String = {
@@ -31,7 +32,8 @@ class MikeMutableDoublyLinkedList[A] {
 
   def push(item2: A): Unit = {
     val el = new MikeMutableDoublyLinkedListEl[A](item2, None, first)
-    if (first.nonEmpty) first.get.prev = Some(el)
+    if (len > 0) first.get.prev = Some(el) else last = Some(el)
+    len = len + 1
     first = Some(el)
   }
 
@@ -40,6 +42,8 @@ class MikeMutableDoublyLinkedList[A] {
     else {
       val item = first.get.item
       first = first.get.next
+      if (len > 1) first.get.prev = None else last = None
+      len = len - 1
       Some(item)
     }
   }
@@ -48,7 +52,8 @@ class MikeMutableDoublyLinkedList[A] {
 
   def pushLast(item2: A): Unit = {
     val el = new MikeMutableDoublyLinkedListEl[A](item2, last, None)
-    if (last.nonEmpty) last.get.next = Some(el)
+    if (len > 0) last.get.next = Some(el) else first = Some(el)
+    len = len + 1
     last = Some(el)
   }
 
@@ -57,6 +62,8 @@ class MikeMutableDoublyLinkedList[A] {
     else {
       val item = last.get.item
       last = last.get.prev
+      if (len > 1) last.get.next = None else first = None
+      len = len - 1
       Some(item)
     }
   }
@@ -74,6 +81,7 @@ class MikeMutableDoublyLinkedList[A] {
         val el = new MikeMutableDoublyLinkedListEl[A](item2, nextToSpecified, nextToSpecified.get.next)
         nextToSpecified.get.next = Some(el)
         if (el.next.isEmpty) el.next.get.prev = Some(el)
+        len = len + 1
         Some(el.item)
       }
     }
@@ -91,6 +99,7 @@ class MikeMutableDoublyLinkedList[A] {
           nextToSpecified.get.next = el.get.next
           el.get.next.get.prev = nextToSpecified
         }
+        len = len - 1
         Some(el.get.item)
       }
     }
@@ -125,10 +134,5 @@ class MikeMutableDoublyLinkedList[A] {
     if (first.isEmpty) false else containsAcc(first.get)
   }
 
-  def length: Long = {
-    @tailrec def lengthAcc(node: MikeMutableDoublyLinkedListEl[A], acc: Long): Long = {
-      if (node.next.isEmpty) acc else lengthAcc(node.next.get, acc + 1)
-    }
-    if (first.isEmpty) 0 else lengthAcc(first.get, 1)
-  }
+  def length: Long = len
 }
