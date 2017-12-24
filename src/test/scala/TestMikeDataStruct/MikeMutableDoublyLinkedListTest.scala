@@ -377,7 +377,7 @@ class MikeMutableDoublyLinkedListTest extends FunSuite {
     assert(l.contains(2) === true)
     assert(l.contains(1000) === false)
 
-    assert(l.pushLast(1) === Some(1))
+    l.pushLast(1)
     assert(l.peek === Some(-1))
     assert(l.peekLast === Some(1))
     assert(l.length === 5)
@@ -399,7 +399,7 @@ class MikeMutableDoublyLinkedListTest extends FunSuite {
     assert(l.contains(2) === true)
     assert(l.contains(1000) === false)
 
-    assert(l.pushLast(1) === Some(1))
+    l.pushLast(1)
     assert(l.peek === Some(-1))
     assert(l.peekLast === Some(1))
     assert(l.length === 5)
