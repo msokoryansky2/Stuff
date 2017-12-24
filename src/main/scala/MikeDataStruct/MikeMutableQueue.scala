@@ -7,4 +7,5 @@ class MikeMutableQueue[A] {
   def dequeue: Option[A] = l.popLast
   def isEmpty: Boolean = l.length == 0
   def size: Long = l.length
+  override def toString: String = l.toString(", ")
 }
