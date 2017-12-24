@@ -18,6 +18,12 @@ class MikeMutableDoublyLinkedList[A] {
       if (node.next.isEmpty) acc + node.item.toString else toStringAcc(node.next.get, acc + node.item.toString + connector)
     if (first.isEmpty) "" else toStringAcc(first.get, "")
   }
+  def toString2: String = toString2(" <-> ")
+  def toString2(connector: String): String = {
+    @tailrec def toStringAcc(node: MikeMutableDoublyLinkedListEl[A], acc: String): String =
+      if (node.prev.isEmpty) node.item.toString + acc else toStringAcc(node.prev.get, connector + node.item.toString + acc)
+    if (last.isEmpty) "" else toStringAcc(last.get, "")
+  }
 
   private def getFirst: Option[MikeMutableDoublyLinkedListEl[A]] = first
   private def getLast: Option[MikeMutableDoublyLinkedListEl[A]] = last
