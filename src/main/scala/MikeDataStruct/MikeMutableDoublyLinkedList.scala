@@ -33,17 +33,26 @@ class MikeMutableDoublyLinkedList[A] {
 
   def push(item2: A): Unit = {
     val el = new MikeMutableDoublyLinkedListEl[A](item2, None, first)
-    if (len > 0) first.get.prev = Some(el) else last = Some(el)
-    len = len + 1
+    if (len == 0) {
+      last = Some(el)
+    } else {
+      first.get.prev = Some(el)
+    }
     first = Some(el)
+    len = len + 1
   }
 
   def pop: Option[A] = {
-    if (first.isEmpty) None
+    if (len == 0) None
     else {
       val item = first.get.item
-      first = first.get.next
-      if (len > 1) first.get.prev = None else last = None
+      if (len == 1) {
+        first = None
+        last = None
+      } else {
+        first = first.get.next
+        first.get.prev = None
+      }
       len = len - 1
       Some(item)
     }
@@ -53,17 +62,26 @@ class MikeMutableDoublyLinkedList[A] {
 
   def pushLast(item2: A): Unit = {
     val el = new MikeMutableDoublyLinkedListEl[A](item2, last, None)
-    if (len > 0) last.get.next = Some(el) else first = Some(el)
-    len = len + 1
+    if (len == 0) {
+      first = Some(el)
+    } else {
+      last.get.next = Some(el)
+    }
     last = Some(el)
+    len = len + 1
   }
 
   def popLast: Option[A] = {
-    if (last.isEmpty) None
+    if (len == 0) None
     else {
       val item = last.get.item
-      last = last.get.prev
-      if (len > 1) last.get.next = None else first = None
+      if (len == 1) {
+        first = None
+        last = None
+      } else {
+        last = last.get.prev
+        last.get.next = None
+      }
       len = len - 1
       Some(item)
     }

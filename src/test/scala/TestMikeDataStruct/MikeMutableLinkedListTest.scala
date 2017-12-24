@@ -4,7 +4,7 @@ import MikeDataStruct.MikeMutableLinkedList
 import org.scalatest.FunSuite
 
 class MikeMutableLinkedListTest extends FunSuite {
-  test("Can peek, push, pop, peekLast, pushLast, and popLast. Can keep track length along the way and check if value is present") {
+  test("Can getFirst, getLast, peek, push, pop, peekLast, pushLast, and popLast. Can keep track length along the way and check if value is present") {
     val l = new MikeMutableLinkedList[Int]
 
     assert(l.length === 0)
