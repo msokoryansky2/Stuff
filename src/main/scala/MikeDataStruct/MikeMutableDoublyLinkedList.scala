@@ -10,6 +10,7 @@ class MikeMutableDoublyLinkedList[A] {
   private var first: Option[MikeMutableDoublyLinkedListEl[A]] = None
   private var last: Option[MikeMutableDoublyLinkedListEl[A]] = None
   private var len: Long = 0
+  def length: Long = len
 
   override def toString: String = toString(" <-> ")
   def toString(connector: String): String = {
@@ -88,17 +89,19 @@ class MikeMutableDoublyLinkedList[A] {
   }
 
   def remove(item2: A): Option[A] = {
-    if (first.isEmpty) None
+    if (len == 0) None
     else if (first.get.item == item2) pop
+    else if (last.get.item == item2) popLast
     else {
       val nextToSpecified = getNextToSpecified(item2)
       if (nextToSpecified.isEmpty) None
       else {
+        // Element el is what we are removing.
         val el = nextToSpecified.get.next
-        if (el.get.next.nonEmpty) {
-          nextToSpecified.get.next = el.get.next
-          el.get.next.get.prev = nextToSpecified
-        }
+        // At this point we know that el.get.next is not empty because we know that it's not "last"
+        // because if it were last, we would've triggered poplast above instead of being here.
+        nextToSpecified.get.next = el.get.next
+        el.get.next.get.prev = nextToSpecified
         len = len - 1
         Some(el.get.item)
       }
@@ -133,6 +136,4 @@ class MikeMutableDoublyLinkedList[A] {
     }
     if (first.isEmpty) false else containsAcc(first.get)
   }
-
-  def length: Long = len
 }
