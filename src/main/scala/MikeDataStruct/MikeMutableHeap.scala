@@ -44,7 +44,7 @@ class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = Mik
     var str = ""
     traverse(MikeMutableHeapTraversalType.PRE_ORDER,
             (ancestors, el) => str += "." * ancestors.length + el.v.get + Properties.lineSeparator)
-    str
+    str.trim
   }
 
   /**
