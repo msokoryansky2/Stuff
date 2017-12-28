@@ -272,7 +272,7 @@ class MikeMutableHeapTest extends FunSuite {
   }
 
   test("random sequence of pushes results in an ordered pop") {
-    val els = Seq.fill(10000)(Random.nextInt(1000) - 500).toList
+    val els = Seq.fill(10000)(Random.nextInt(100000) - 50000).toList
     val elsSorted = els.sorted
 
     val h1 = new MikeMutableHeap[Int](MikeMutableHeapType.MIN)
