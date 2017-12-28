@@ -1,5 +1,6 @@
 package MikeDataStruct
 
+import scala.annotation.tailrec
 import scala.util.Properties
 
 object MikeMutableHeapType extends Enumeration {
@@ -14,7 +15,14 @@ object MikeMutableHeapTraversalType extends Enumeration {
 }
 
 class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = MikeMutableHeapType.MIN) {
-  case class MikeMutableHeapEl[A](var v: Option[A], var l: Option[MikeMutableHeapEl[A]], var r: Option[MikeMutableHeapEl[A]])
+  case class MikeMutableHeapEl[A](var v: Option[A], var l: Option[MikeMutableHeapEl[A]], var r: Option[MikeMutableHeapEl[A]]) {
+    def copy(other: MikeMutableHeapEl[A]): Unit = {
+      this.v = other.v
+      this.l = other.l
+      this.r = other.r
+    }
+    def isLeaf: Boolean = l.isEmpty && r.isEmpty
+  }
 
   private var root: Option[MikeMutableHeapEl[A]] = None
 
@@ -55,7 +63,38 @@ class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = Mik
     (a < b && heapType == MikeMutableHeapType.MIN) || (a > b && heapType == MikeMutableHeapType.MAX)
 
   private def heapify(): Unit = {
-    // TODO
+    if (root.nonEmpty) {
+      def heapifyWalk(el: Option[MikeMutableHeapEl[A]]): Unit = {
+        if (el.nonEmpty && el.get.v.isEmpty) {
+          // this should not be called if el has no children
+          require(el.get.l.nonEmpty || el.get.r.nonEmpty, "heapifyWalk should not be called on childless nodes")
+          // If there is just one child, then heapifying is trivial -- we "pull up" that one child
+          if (el.get.l.isEmpty) el.get.copy(el.get.r.get)
+          else if (el.get.r.isEmpty) el.get.copy(el.get.l.get)
+          else {
+            // Both l and r are present. We "pull up" the smaller of the two,
+            // which creates a None in its value which we then recursively call heapifyWalk on
+            if (isAbove(el.get.l.get.v.get, el.get.r.get.v.get)) {
+              el.get.v = el.get.l.get.v
+              if (el.get.l.get.isLeaf) el.get.l = None
+              else {
+                el.get.l.get.v = None
+                heapifyWalk(el.get.l)
+              }
+            } else {
+              el.get.v = el.get.r.get.v
+              if (el.get.r.get.isLeaf) el.get.r = None
+              else {
+                el.get.r.get.v = None
+                heapifyWalk(el.get.r)
+              }
+            }
+          }
+        }
+      }
+      if (root.get.l.isEmpty && root.get.r.isEmpty) root = None         // childless root heapifying
+      else heapifyWalk(root)
+    }
   }
 
   def push(v2: A): Unit =
@@ -64,7 +103,7 @@ class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = Mik
       /**
         * Bubble down v2 knowing that it should be somewhere below acc.v
         */
-      def pushAcc(acc: MikeMutableHeapEl[A]): Unit = {
+      @tailrec def pushAcc(acc: MikeMutableHeapEl[A]): Unit = {
         if (acc.l.isEmpty) acc.l = Some(new MikeMutableHeapEl[A](Some(v2), None, None))       // v2 becomes new l
         else if (acc.r.isEmpty) acc.r = Some(new MikeMutableHeapEl[A](Some(v2), None, None))  // v2 becomes new r
         else if (isAbove(acc.l.get.v.get, v2)) pushAcc(acc.l.get)                             // v2 goes below l
@@ -77,8 +116,8 @@ class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = Mik
 
   def peek: Option[A] = if (root.isEmpty || root.get.v.isEmpty) None else root.get.v
   def pop: Option[A] =
-    if (root.isEmpty || root.get.v.isEmpty) None
-    else {
+    if (root.isEmpty || root.get.v.isEmpty) None            // empty tree
+    else {                                                  // root + at least one child
       val item = root.get.v
       root.get.v = None
       heapify
