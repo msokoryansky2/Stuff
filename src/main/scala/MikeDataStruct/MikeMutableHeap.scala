@@ -120,7 +120,7 @@ class MikeMutableHeap[A: Ordering](val heapType: MikeMutableHeapType.Value = Mik
     else {                                                  // root + at least one child
       val item = root.get.v
       root.get.v = None
-      heapify
+      heapify()
       item
     }
 }

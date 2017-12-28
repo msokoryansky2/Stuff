@@ -272,17 +272,19 @@ class MikeMutableHeapTest extends FunSuite {
   }
 
   test("random sequence of pushes results in an ordered pop") {
-    val els = Seq.fill(10000)(Random.nextInt(100000) - 50000).toList
-    val elsSorted = els.sorted
+    (1 to 100).foreach(loop => {
+      val els = Seq.fill(Random.nextInt(5000) + 1)(Random.nextInt(100000) - 50000).toList
+      val elsSorted = els.sorted
 
-    val h1 = new MikeMutableHeap[Int](MikeMutableHeapType.MIN)
-    els.foreach(el => h1.push(el))
-    var mins = (1 to els.size).map(i => h1.pop.get).toList
-    assert(mins === elsSorted)
+      val h1 = new MikeMutableHeap[Int](MikeMutableHeapType.MIN)
+      els.foreach(el => h1.push(el))
+      var mins = (1 to els.size).map(i => h1.pop.get).toList
+      assert(mins === elsSorted)
 
-    val h2 = new MikeMutableHeap[Int](MikeMutableHeapType.MAX)
-    els.foreach(el => h2.push(el))
-    var maxs = (1 to els.size).map(i => h2.pop.get).toList
-    assert(maxs === elsSorted.reverse)
+      val h2 = new MikeMutableHeap[Int](MikeMutableHeapType.MAX)
+      els.foreach(el => h2.push(el))
+      var maxs = (1 to els.size).map(i => h2.pop.get).toList
+      assert(maxs === elsSorted.reverse)
+    })
   }
 }
