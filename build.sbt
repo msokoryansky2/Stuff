@@ -11,3 +11,5 @@ libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.1"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 libraryDependencies += "com.typesafe.akka" % "akka-actor_2.12" % "2.5.4"
+
+libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.5"
